@@ -1,28 +1,27 @@
 <?php
-// =================== ประมวลผลเมื่อกด submit ===================
 if (isset($_POST['submit'])) {
 
-    $name   = $_POST['fullname'];
-    $email  = $_POST['email'];
-    $topic  = $_POST['topic'];
-    $join   = $_POST['join'];
+    $fullname = $_POST['fullname'];
+    $email    = $_POST['email'];
+    $course   = $_POST['course'];
+    $type     = $_POST['type'];
 
-    // checkbox (เลือกได้หลายค่า)
-    if (!empty($_POST['food'])) {
+    // อาหาร (Checkbox)
+    if (isset($_POST['food'])) {
         $food = implode(", ", $_POST['food']);
     } else {
         $food = "ไม่ระบุ";
     }
 
-    // เตรียมข้อมูลสำหรับบันทึกไฟล์
-    $data = "ชื่อ-นามสกุล: $name\n";
-    $data .= "Email: $email\n";
-    $data .= "หัวข้ออบรม: $topic\n";
-    $data .= "อาหารที่ต้องการ: $food\n";
-    $data .= "รูปแบบการเข้าร่วม: $join\n";
-    $data .= "-----------------------------\n";
+    // ค่าลงทะเบียน
+    if ($type == "Onsite") {
+        $price = 1500;
+    } else {
+        $price = 800;
+    }
 
-    // บันทึกข้อมูลลงไฟล์ register.txt
+    // บันทึกไฟล์
+    $data = $fullname . "|" . $email . "|" . $course . "|" . $food . "|" . $type . "|" . $price . "\n";
     file_put_contents("register.txt", $data, FILE_APPEND);
 }
 ?>
@@ -30,52 +29,156 @@ if (isset($_POST['submit'])) {
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>ฟอร์มลงทะเบียนอบรม</title>
+<meta charset="UTF-8">
+<title>ฟอร์มลงทะเบียนอบรม</title>
+
+<!-- Bootstrap 5 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body{
+    background: linear-gradient(135deg,#74ebd5,#ACB6E5);
+    min-height:100vh;
+}
+.card{
+    border-radius:15px;
+}
+</style>
 </head>
+
 <body>
 
-<h2>ฟอร์มลงทะเบียนอบรม</h2>
+<div class="container py-5">
 
-<form method="post">
-    ชื่อ-นามสกุล:<br>
-    <input type="text" name="fullname" required><br><br>
+    <!-- ฟอร์ม -->
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h3 class="text-center text-primary mb-4">ฟอร์มลงทะเบียนอบรม</h3>
 
-    Email:<br>
-    <input type="email" name="email" required><br><br>
+                    <form method="post">
 
-    หัวข้ออบรม:<br>
-    <select name="topic">
-        <option>AI สำหรับงานสำนักงาน</option>
-        <option>Excel สำหรับการทำงาน</option>
-        <option>การเขียนเว็บด้วย PHP</option>
-    </select><br><br>
+                        <div class="mb-3">
+                            <label class="form-label">ชื่อ-นามสกุล</label>
+                            <input type="text" name="fullname" class="form-control" required>
+                        </div>
 
-    อาหารที่ต้องการ:<br>
-    <input type="checkbox" name="food[]" value="ปกติ"> ปกติ
-    <input type="checkbox" name="food[]" value="มังสวิรัติ"> มังสวิรัติ
-    <input type="checkbox" name="food[]" value="ฮาลาล"> ฮาลาล
-    <br><br>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
 
-    รูปแบบการเข้าร่วม:<br>
-    <input type="radio" name="join" value="Onsite" required> Onsite
-    <input type="radio" name="join" value="Online"> Online
-    <br><br>
+                        <div class="mb-3">
+                            <label class="form-label">หัวข้ออบรม</label>
+                            <select name="course" class="form-select">
+                                <option>AI สำหรับงานสำนักงาน</option>
+                                <option>Excel สำหรับการทำงาน</option>
+                                <option>การเขียนเว็บด้วย PHP</option>
+                            </select>
+                        </div>
 
-    <input type="submit" name="submit" value="ลงทะเบียน">
-</form>
+                        <div class="mb-3">
+                            <label class="form-label">อาหารที่ต้องการ</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="food[]" value="ปกติ">
+                                <label class="form-check-label">ปกติ</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="food[]" value="มังสวิรัติ">
+                                <label class="form-check-label">มังสวิรัติ</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" name="food[]" value="ฮาลาล">
+                                <label class="form-check-label">ฮาลาล</label>
+                            </div>
+                        </div>
 
-<hr>
+                        <div class="mb-3">
+                            <label class="form-label">รูปแบบการเข้าร่วม</label><br>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" value="Onsite" required>
+                                <label class="form-check-label">Onsite</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="type" value="Online">
+                                <label class="form-check-label">Online</label>
+                            </div>
+                        </div>
 
-<h3>ข้อมูลผู้ลงทะเบียน</h3>
-<pre>
-<?php
-// =================== แสดงข้อมูลจากไฟล์ ===================
-if (file_exists("register.txt")) {
-    echo file_get_contents("register.txt");
-}
-?>
-</pre>
+                        <div class="d-grid">
+                            <button type="submit" name="submit" class="btn btn-primary btn-lg">
+                                ลงทะเบียน
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- แสดงผลหลังลงทะเบียน -->
+    <?php if (isset($_POST['submit'])) { ?>
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <div class="alert alert-success shadow">
+                <h5 class="alert-heading">ลงทะเบียนสำเร็จ</h5>
+                ชื่อ: <?= $fullname ?><br>
+                อีเมล: <?= $email ?><br>
+                หัวข้ออบรม: <?= $course ?><br>
+                อาหาร: <?= $food ?><br>
+                รูปแบบ: <?= $type ?><br>
+                ค่าลงทะเบียน: <?= number_format($price,2) ?> บาท
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+
+    <!-- ตารางรายชื่อ -->
+    <?php if (file_exists("register.txt")) { ?>
+    <div class="row mt-5">
+        <div class="col">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h4 class="text-center mb-3">รายชื่อผู้ลงทะเบียนทั้งหมด</h4>
+
+                    <table class="table table-bordered table-striped text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ชื่อ</th>
+                                <th>Email</th>
+                                <th>หัวข้อ</th>
+                                <th>อาหาร</th>
+                                <th>รูปแบบ</th>
+                                <th>ค่าลงทะเบียน</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        $lines = file("register.txt");
+                        foreach ($lines as $line) {
+                            list($n,$e,$c,$f,$t,$p) = explode("|", trim($line));
+                            echo "<tr>
+                                    <td>$n</td>
+                                    <td>$e</td>
+                                    <td>$c</td>
+                                    <td>$f</td>
+                                    <td>$t</td>
+                                    <td>".number_format($p,2)."</td>
+                                  </tr>";
+                        }
+                        ?>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php } ?>
+
+</div>
 
 </body>
 </html>
